@@ -1,0 +1,22 @@
+nest g module modules/users
+nest g controller modules/users --no-spec
+nest g service modules/users --no-spec
+nest g class modules/users/users.dto --no-spec --flat
+nest g class modules/users/users.schema --no-spec --flat
+
+nest g guard modules/authentication/authentication --no-spec --flat
+nest g decorator modules/authentication/authentication --no-spec --flat
+
+//Optional CLI Command
+nest g class modules/users/dto/create-category.dto --no-spec --flat
+nest g class modules/users/dto/update-category.dto --no-spec --flat
+nest g class modules/users/dto/query-category.dto --no-spec --flat
+nest g class common/dto/pagination-query.dto --no-spec --flat
+
+
+src/modules/users/
+├── users.module.ts
+├── users.controller.ts
+├── users.service.ts
+├── users.dto.ts
+└── product.schema.ts
