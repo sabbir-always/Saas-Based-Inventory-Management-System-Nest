@@ -20,7 +20,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     ObserveModule.forRoot({
       appKey: process.env.OBSERVE_APP_KEY ?? 'YOUR_APP_KEY',
       appSecret: process.env.OBSERVE_APP_SECRET ?? 'YOUR_APP_SECRET',
-      serviceId: 'backend',
+      serviceId: 'sass-based-inventory-management-system',
     }),
     CategoriesModule,
     UnittypesModule,
