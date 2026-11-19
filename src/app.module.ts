@@ -12,6 +12,7 @@ import { WarehousesModule } from './modules/warehouses/warehouses.module.js';
 import { ExpensesModule } from './modules/expenses/expenses.module.js';
 import { ReportsModule } from './modules/reports/reports.module.js';
 import { UsersModule } from './modules/users/users.module.js';
+import { DatabaseModule } from './database/database.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -32,6 +33,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     ExpensesModule,
     ReportsModule,
     UsersModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
