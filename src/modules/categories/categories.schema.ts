@@ -1,1 +1,17 @@
-export class CategoriesSchema {}
+import { HydratedDocument, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+export type CategoriesDocument = HydratedDocument<Categories>;
+
+@Schema({ timestamps: true })
+export class Categories {
+    @Prop({ type: String, required: true, trim: true })
+    categories_name: string;
+
+    @Prop({ type: Number, default: 0 })
+    number_of_products: number;
+    
+    @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
+    status: 'active' | 'inactive';
+}
+
+export const CategoriesSchema = SchemaFactory.createForClass(Categories);

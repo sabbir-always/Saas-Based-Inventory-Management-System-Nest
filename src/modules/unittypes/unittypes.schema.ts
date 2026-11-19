@@ -1,1 +1,17 @@
-export class UnittypesSchema {}
+import { HydratedDocument, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+export type UnittypesDocument = HydratedDocument<Unittypes>;
+
+@Schema({ timestamps: true })
+export class Unittypes {
+    @Prop({ type: String, required: true, trim: true })
+    unittypes_name: string;
+
+    @Prop({ type: Number, default: 0 })
+    number_of_products: number;
+
+    @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
+    status: 'active' | 'inactive';
+}
+
+export const UnittypesSchema = SchemaFactory.createForClass(Unittypes);
