@@ -17,7 +17,7 @@ export class PaginationDto {
 }
 
 export class CreateCategoriesDto {
-    @Transform(({ value }) => (typeof value === 'string' && value.trim() === '' ? undefined : value))
+    @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
     @IsString()
     @IsNotEmpty()
     @MinLength(2)
@@ -33,7 +33,7 @@ export class UpdateCategoriesDto extends CreateCategoriesDto {
 
 export class CategoriesQueryDto extends PaginationDto {
     @IsOptional()
-    @Transform(({ value }) => (typeof value === 'string' && value.trim() === '' ? undefined : value))
+    @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
     @IsString()
     @MaxLength(100)
     search: string;

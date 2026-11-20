@@ -4,7 +4,7 @@ export type ProductsDocument = HydratedDocument<Products>;
 
 @Schema({ timestamps: true })
 export class Products {
-    @Prop({ type: String, required: true, trim: true, unique: true, sparse: true, minLength: 3, maxLength: 20 })
+    @Prop({ type: String, required: true, trim: true, unique: true, minLength: 3, maxLength: 20 })
     product_model: string;
 
     @Prop({ type: String, required: true, trim: true, minLength: 3, maxLength: 20 })
