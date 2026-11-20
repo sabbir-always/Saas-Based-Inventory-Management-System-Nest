@@ -18,10 +18,10 @@ export class Users {
     @Prop({ type: String, required: true, trim: true })
     last_name: string;
 
-    @Prop({ type: String, required: true, trim: true, unique: true, lowercase: true })
+    @Prop({ type: String, required: true, trim: true, unique: true, sparse: true, lowercase: true })
     email: string;
 
-    @Prop({ type: String, required: true, unique: true, trim: true })
+    @Prop({ type: String, required: true, unique: true, sparse: true, trim: true })
     phone: string;
 
     @Prop({ type: String, required: true, select: false, set: (value: string) => bcrypt.hashSync(value, bcrypt.genSaltSync(10)) })

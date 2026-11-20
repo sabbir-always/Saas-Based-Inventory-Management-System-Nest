@@ -1,10 +1,10 @@
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export type CategoriesDocument = HydratedDocument<Categories>;
 
 @Schema({ timestamps: true })
 export class Categories {
-    @Prop({ type: String, required: true, trim: true, unique: true, minLength: 3, maxLength: 30 })
+    @Prop({ type: String, required: true, trim: true, unique: true, sparse: true, minLength: 3, maxLength: 30 })
     categories_name: string;
 
     @Prop({ type: Number, min: 0, default: 0 })
