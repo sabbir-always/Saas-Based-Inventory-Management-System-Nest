@@ -20,8 +20,8 @@ export class CreateCategoriesDto {
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
     @IsString()
     @IsNotEmpty()
-    @MinLength(2)
-    @MaxLength(20)
+    @MinLength(3)
+    @MaxLength(30)
     categories_name: string;
 }
 
