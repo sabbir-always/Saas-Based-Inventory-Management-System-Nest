@@ -9,6 +9,7 @@ import { UnittypesModule } from '../unittypes/unittypes.module.js';
 @Module({
   imports: [CategoriesModule, UnittypesModule, MongooseModule.forFeature([{ name: Products.name, schema: ProductsSchema }])],
   controllers: [ProductsController],
-  providers: [ProductsService]
+  providers: [ProductsService],
+  exports: [MongooseModule]
 })
 export class ProductsModule { }
