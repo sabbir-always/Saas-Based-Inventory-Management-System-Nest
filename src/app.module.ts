@@ -1,6 +1,7 @@
+import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
@@ -12,14 +13,13 @@ import { CustomersModule } from './modules/customers/customers.module.js';
 import { ExpensesModule } from './modules/expenses/expenses.module.js';
 import { ReportsModule } from './modules/reports/reports.module.js';
 import { UsersModule } from './modules/users/users.module.js';
-import { DatabaseModule } from './database/database.module.js';
-
-export const { ObserveModule, ObserveInstrument } = createObserveModule();
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    CategoriesModule, UnittypesModule, ProductsModule, PurchaseModule, SuppliersModule, CustomersModule, ExpensesModule, ReportsModule, UsersModule, DatabaseModule,
+    MongooseModule.forRootAsync({ useFactory: () => ({ uri: process.env.MONGODB_URI as string }) }),
+    CategoriesModule, UnittypesModule, ProductsModule, PurchaseModule, SuppliersModule, CustomersModule, ExpensesModule, ReportsModule, UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
