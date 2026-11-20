@@ -5,6 +5,12 @@ export type SuppliersDocument = HydratedDocument<Suppliers>;
 
 @Schema({ timestamps: true })
 export class Suppliers {
+    @Prop({ type: Date, default: Date.now })
+    date_and_time: Date;
+
+    @Prop({ type: String, default: null })
+    date_and_time_formatted: string | null;
+
     @Prop({ type: String, required: true, trim: true, minlength: 3, maxlength: 50 })
     supplier_name: string;
 
@@ -21,13 +27,16 @@ export class Suppliers {
     warehouse_name: string;
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_purchase: number;
+    total_purchase: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_payments: number;
+    total_payments: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    current_dues: number;
+    current_dues: number; //auto-complete
+
+    @Prop({ type: Number, min: 0, default: 0 })
+    number_of_purchase: number; //auto-complete
 
     @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
     status: 'active' | 'inactive';

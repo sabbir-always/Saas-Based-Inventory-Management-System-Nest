@@ -8,7 +8,7 @@ export class Unittypes {
     unittypes_name: string;
 
     @Prop({ type: Number, min: 0, default: 0 })
-    number_of_products: number;
+    number_of_products: number; //auto-complete
 
     @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
     status: 'active' | 'inactive';
