@@ -13,7 +13,6 @@ import { Unittypes, UnittypesSchema } from '../unittypes/unittypes.schema.js';
     { name: Unittypes.name, schema: UnittypesSchema }
   ])],
   controllers: [ProductsController],
-  providers: [ProductsService],
-  exports: [MongooseModule]
+  providers: [ProductsService]
 })
 export class ProductsModule { }

@@ -8,7 +8,6 @@ import { Module } from '@nestjs/common';
 @Module({
   imports: [MongooseModule.forFeature([{ name: Categories.name, schema: CategoriesSchema }, { name: Products.name, schema: ProductsSchema }])],
   controllers: [CategoriesController],
-  providers: [CategoriesService],
-  exports: [MongooseModule]
+  providers: [CategoriesService]
 })
 export class CategoriesModule { }

@@ -7,7 +7,6 @@ import { Unittypes, UnittypesSchema } from './unittypes.schema.js';
 @Module({
   imports: [MongooseModule.forFeature([{ name: Unittypes.name, schema: UnittypesSchema }])],
   controllers: [UnittypesController],
-  providers: [UnittypesService],
-  exports: [MongooseModule]
+  providers: [UnittypesService]
 })
 export class UnittypesModule { }
