@@ -1,5 +1,5 @@
-import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
+import { AppModule } from './app.module.js';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
