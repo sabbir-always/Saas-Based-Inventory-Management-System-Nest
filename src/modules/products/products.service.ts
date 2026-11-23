@@ -2,7 +2,6 @@ import { BadRequestException, ConflictException, ForbiddenException, HttpExcepti
 import { CreatePagination, CreateSearchRegex, MongooseExceptionError } from '../../common/helpers/common.helper.js';
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from './products.dto.js';
 import { Categories, CategoriesDocument } from '../categories/categories.schema.js';
-import { Suppliers, SuppliersDocument } from '../suppliers/suppliers.schema.js';
 import { Unittypes, UnittypesDocument } from '../unittypes/unittypes.schema.js';
 import { Purchase, PurchaseDocument } from '../purchase/purchase.schema.js';
 import { isObjectIdOrHexString, Model, QueryFilter } from 'mongoose';
@@ -15,8 +14,7 @@ export class ProductsService {
         @InjectModel(Products.name) private readonly ProductModel: Model<ProductsDocument>,
         @InjectModel(Categories.name) private readonly CategoriesModel: Model<CategoriesDocument>,
         @InjectModel(Unittypes.name) private readonly UnittypesModel: Model<UnittypesDocument>,
-        @InjectModel(Purchase.name) private readonly PurchaseModel: Model<PurchaseDocument>,
-        @InjectModel(Suppliers.name) private readonly SuppliersModel: Model<SuppliersDocument>
+        @InjectModel(Purchase.name) private readonly PurchaseModel: Model<PurchaseDocument>
     ) { }
 
     async create(payload: CreateProductDto) {
@@ -127,7 +125,7 @@ export class ProductsService {
             if (response) {
                 return {
                     success: true,
-                    message: "Student Fetched Success",
+                    message: "Product Fetched Success",
                     payload: {
                         ...rest,
                         categories_id: categories_id?._id ?? null,
@@ -187,7 +185,7 @@ export class ProductsService {
             if (response) {
                 return {
                     success: true,
-                    message: "Categories Updated Success",
+                    message: "Product Updated Success",
                     payload: response
                 }
             }
@@ -202,15 +200,13 @@ export class ProductsService {
     async remove(id: string) {
         try {
             if (!isObjectIdOrHexString(id)) throw new BadRequestException('Invalid Product ID');
-            const [findProductById, ProductHasPurchases, ProductHasSuppliers] = await Promise.all([
+            const [findProductById, ProductHasPurchases] = await Promise.all([
                 this.ProductModel.findById(id).lean(),
-                this.PurchaseModel.exists({ products_id: id }),
-                this.SuppliersModel.exists({ products_id: id })
+                this.PurchaseModel.exists({ products_id: id })
             ]);
 
             if (!findProductById) throw new NotFoundException('Product Not Found By ID');
             if (ProductHasPurchases) throw new ConflictException('Product Has Purchases, Delete Or Move Them First');
-            if (ProductHasSuppliers) throw new ConflictException('Product Has Suppliers, Delete Or Move Them First');
             if (findProductById.quantity > 0) throw new ConflictException('Product Has Quantity, Delete Or Move Them First');
             if (findProductById.status === "active") throw new ForbiddenException('Cannot Delete Active Product. Please Deactivate First.');
 
