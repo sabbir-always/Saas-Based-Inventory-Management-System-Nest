@@ -1,5 +1,5 @@
-import { HydratedDocument, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 export type ProductsDocument = HydratedDocument<Products>;
 
 @Schema({ timestamps: true })
@@ -17,7 +17,7 @@ export class Products {
     categories_id: Types.ObjectId;
 
     @Prop({ type: Types.ObjectId, ref: 'Unittypes', required: true })
-    unittype_id: Types.ObjectId;
+    unittypes_id: Types.ObjectId;
 
     @Prop({ type: Number, min: 0, default: 0 })
     quantity: number; //auto-complete
