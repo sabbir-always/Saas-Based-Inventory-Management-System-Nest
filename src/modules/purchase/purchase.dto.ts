@@ -10,7 +10,7 @@ export class PaginationDto {
 }
 
 export class CreatePurchaseDto {
-    @IsDateString()
+    @IsOptional() @IsDateString()
     date_and_time: string;
 
     @IsMongoId() @IsNotEmpty()
@@ -19,7 +19,7 @@ export class CreatePurchaseDto {
     @IsMongoId() @IsNotEmpty()
     suppliers_id: string;
 
-    @Type(() => Number) @IsOptional() @IsNumber() @Min(1)
+    @Type(() => Number) @IsInt() @Min(1)
     quantity: number;
 
     @Type(() => Number) @IsOptional() @IsNumber({ maxDecimalPlaces: 2 }) @Min(0)
@@ -29,14 +29,11 @@ export class CreatePurchaseDto {
     shipping_cost: number;
 
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
-    @IsOptional() @IsString() @MaxLength(200)
+    @IsOptional() @IsString() @MinLength(3) @MaxLength(200)
     notes: string;
 }
 
-export class UpdatePurchaseDto extends CreatePurchaseDto {
-    @IsOptional() @IsIn(['active', 'inactive'])
-    status: 'active' | 'inactive';
-}
+export class UpdatePurchaseDto extends CreatePurchaseDto {}
 
 export class PurchaseQueryDto extends PaginationDto {
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))

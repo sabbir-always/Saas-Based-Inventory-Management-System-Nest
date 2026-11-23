@@ -14,12 +14,13 @@ import { ExpensesModule } from './modules/expenses/expenses.module.js';
 import { ReportsModule } from './modules/reports/reports.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { MongooseModule } from '@nestjs/mongoose';
+import { InvoiceModule } from './modules/invoice/invoice.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({ useFactory: () => ({ uri: process.env.MONGODB_URI as string }) }),
-    CategoriesModule, UnittypesModule, ProductsModule, PurchaseModule, SuppliersModule, CustomersModule, ExpensesModule, ReportsModule, UsersModule,
+    CategoriesModule, UnittypesModule, ProductsModule, PurchaseModule, SuppliersModule, CustomersModule, ExpensesModule, ReportsModule, UsersModule, InvoiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

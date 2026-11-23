@@ -14,7 +14,7 @@ export class Suppliers {
     @Prop({ type: String, required: true, trim: true, minlength: 3, maxlength: 50 })
     supplier_name: string;
 
-    @Prop({ type: String, trim: true, required: true, unique: true, minlength: 3, maxlength: 20 })
+    @Prop({ type: String, trim: true, required: true, unique: true, minlength: 11, maxlength: 11 })
     supplier_phone: string;
 
     @Prop({ type: String, trim: true, required: true, unique: true, lowercase: true, minlength: 3, maxlength: 50 })
