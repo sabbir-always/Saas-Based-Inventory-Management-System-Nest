@@ -217,7 +217,6 @@ export class ProductsService {
 
             const response = await this.ProductModel.db.transaction(async (session) => {
                 const product = await this.ProductModel.findByIdAndDelete(id, { session }).lean();
-
                 await this.CategoriesModel.updateOne({ _id: findProductById.categories_id }, { $inc: { number_of_products: -1 } }, { session });
                 await this.UnittypesModel.updateOne({ _id: findProductById.unittypes_id }, { $inc: { number_of_products: -1 } }, { session });
 
@@ -227,8 +226,7 @@ export class ProductsService {
             if (response) {
                 return {
                     success: true,
-                    message: "Product Removed Success",
-                    payload: response
+                    message: "Product Removed Success"
                 }
             }
 
