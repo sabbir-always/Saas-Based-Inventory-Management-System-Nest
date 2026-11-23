@@ -15,8 +15,8 @@ export class CreateCustomersDto {
     customer_name: string;
 
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
-    @IsString() @IsNotEmpty() @MinLength(3) @MaxLength(20)
-    @Matches(/^[0-9+\-\s]+$/, { message: 'customer_phone must contain only numbers, +, - and spaces' })
+    @IsString() @IsNotEmpty() @MinLength(11) @MaxLength(11)
+    @Matches(/^01[3-9]\d{8}$/, { message: 'Invalid Bangladeshi phone number' })
     customer_phone: string;
 
     @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
