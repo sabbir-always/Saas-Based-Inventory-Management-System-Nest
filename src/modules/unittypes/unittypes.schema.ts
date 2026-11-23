@@ -4,7 +4,7 @@ export type UnittypesDocument = HydratedDocument<Unittypes>;
 
 @Schema({ timestamps: true })
 export class Unittypes {
-    @Prop({ type: String, required: true, trim: true, unique: true, minLength: 3, maxLength: 30 })
+    @Prop({ type: String, required: true, trim: true, unique: true, minLength: 2, maxLength: 20 })
     unittypes_name: string;
 
     @Prop({ type: Number, min: 0, default: 0 })

@@ -1,15 +1,107 @@
+import { ConflictException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { CreatePagination, CreateSearchRegex, MongooseExceptionError } from '../../common/helpers/common.helper.js';
+import { CreateProductDto, ProductQueryDto } from './products.dto.js';
 import { Categories, CategoriesDocument } from '../categories/categories.schema.js';
 import { Unittypes, UnittypesDocument } from '../unittypes/unittypes.schema.js';
 import { Products, ProductsDocument } from './products.schema.js';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, QueryFilter } from 'mongoose';
 
 @Injectable()
 export class ProductsService {
     constructor(
         @InjectModel(Products.name) private readonly ProductModel: Model<ProductsDocument>,
         @InjectModel(Categories.name) private readonly CategoriesModel: Model<CategoriesDocument>,
-        @InjectModel(Unittypes.name) private readonly UnittypesModel: Model<UnittypesDocument>,
+        @InjectModel(Unittypes.name) private readonly UnittypesModel: Model<UnittypesDocument>
     ) { }
+
+    async create(payload: CreateProductDto) {
+        try {
+            const [findProductByModel, findCategoriesById, findUnittypesById] = await Promise.all([
+                this.ProductModel.exists({ product_model: { $regex: `^${CreateSearchRegex(payload.product_model)}$`, $options: 'i' } }),
+                this.CategoriesModel.findById(payload.categories_id).lean(),
+                this.UnittypesModel.findById(payload.unittypes_id).lean()
+            ])
+
+            if (findProductByModel) throw new ConflictException('Product Model Name Already Exists');
+            if (!findCategoriesById) throw new NotFoundException('Categories Not Found By ID');
+            if (!findUnittypesById) throw new NotFoundException('Unittypes Not Found By ID');
+
+            const response = await this.ProductModel.db.transaction(async (session) => {
+                const [product] = await this.ProductModel.create([{
+                    product_model: payload.product_model,
+                    product_brand: payload.product_brand,
+                    product_name: payload.product_name,
+                    categories_id: payload.categories_id,
+                    unittypes_id: payload.unittypes_id,
+                    purchase_price: payload.purchase_price,
+                    selling_price: payload.selling_price,
+                }], { session });
+
+                await this.CategoriesModel.updateOne({ _id: payload.categories_id }, { $inc: { number_of_products: 1 } }, { session });
+                await this.UnittypesModel.updateOne({ _id: payload.unittypes_id }, { $inc: { number_of_products: 1 } }, { session });
+                return product
+            })
+
+            if (response) {
+                return {
+                    success: true,
+                    message: "Product Created Success",
+                    payload: response
+                }
+            }
+
+        } catch (error: any) {
+            if (error instanceof HttpException) throw error;
+            try { MongooseExceptionError(error) } catch (err) { if (err instanceof HttpException) throw err }
+            throw new InternalServerErrorException(error.message ?? "Internal Server Error");
+        }
+    }
+
+    async show(query: ProductQueryDto) {
+        const { limit, page, search, categories_id, unittypes_id, status } = query;
+        const filter: QueryFilter<ProductsDocument> = {};
+
+        try {
+            if (search) {
+                const regex = { $regex: CreateSearchRegex(search), $options: 'i' };
+                filter.$or = [{ product_model: regex }, { product_brand: regex }, { product_name: regex }];
+            }
+            if (status && ["active", "inactive"].includes(status)) { filter.status = status };
+            if (categories_id) filter.categories_id = categories_id;
+            if (unittypes_id) filter.unittypes_id = unittypes_id;
+
+            const [products, count] = await Promise.all([
+                this.ProductModel.find(filter)
+                    .populate('categories_id', 'categories_name')
+                    .populate('unittypes_id', 'unittypes_name')
+                    .sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
+                this.ProductModel.countDocuments(filter)
+            ]);
+
+            const response = products.map(({ categories_id, unittypes_id, ...product }: any) => {
+                return {
+                    ...product,
+                    categories_id: categories_id?._id ?? null,
+                    categories_name: categories_id?.categories_name ?? null,
+                    unittypes_id: unittypes_id?._id ?? null,
+                    unittypes_name: unittypes_id?.unittypes_name ?? null
+                }
+            })
+
+            if (response) {
+                return {
+                    success: response.length > 0 ? true : false,
+                    message: response.length > 0 ? "Products Fetched Success" : "Products Not Found",
+                    pagination: CreatePagination(page, limit, count),
+                    payload: response
+                }
+            }
+
+        } catch (error: any) {
+            if (error instanceof HttpException) throw error;
+            throw new InternalServerErrorException(error.message ?? "Internal Server Error");
+        }
+    }
+
 }

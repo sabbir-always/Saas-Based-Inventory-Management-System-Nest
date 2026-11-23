@@ -11,7 +11,7 @@ export class PaginationDto {
 
 export class CreateUnittypesDto {
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
-    @IsString() @IsNotEmpty() @MinLength(3) @MaxLength(30)
+    @IsString() @IsNotEmpty() @MinLength(2) @MaxLength(20)
     unittypes_name: string;
 }
 
