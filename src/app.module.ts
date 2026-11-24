@@ -15,12 +15,15 @@ import { ReportsModule } from './modules/reports/reports.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { MongooseModule } from '@nestjs/mongoose';
 import { InvoiceModule } from './modules/invoice/invoice.module.js';
+import { InstallmentModule } from './modules/installment/installment.module.js';
+import { CustomersPaymentModule } from './modules/customers-payment/customers-payment.module.js';
+import { SuppliersPaymentModule } from './modules/suppliers-payment/suppliers-payment.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({ useFactory: () => ({ uri: process.env.MONGODB_URI as string }) }),
-    CategoriesModule, UnittypesModule, ProductsModule, PurchaseModule, SuppliersModule, CustomersModule, ExpensesModule, ReportsModule, UsersModule, InvoiceModule,
+    CategoriesModule, UnittypesModule, ProductsModule, PurchaseModule, SuppliersModule, CustomersModule, ExpensesModule, ReportsModule, UsersModule, InvoiceModule, InstallmentModule, CustomersPaymentModule, SuppliersPaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

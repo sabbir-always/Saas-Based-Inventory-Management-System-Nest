@@ -1,22 +1,22 @@
-nest g module modules/invoice
-nest g controller modules/invoice --no-spec
-nest g service modules/invoice --no-spec
-nest g class modules/invoice/invoice.dto --no-spec --flat
-nest g class modules/invoice/invoice.schema --no-spec --flat
+nest g module modules/suppliers-payment
+nest g controller modules/suppliers-payment --no-spec
+nest g service modules/suppliers-payment --no-spec
+nest g class modules/suppliers-payment/suppliers-payment.dto --no-spec --flat
+nest g class modules/suppliers-payment/suppliers-payment.schema --no-spec --flat
 
 nest g guard modules/authentication/authentication --no-spec --flat
 nest g decorator modules/authentication/authentication --no-spec --flat
 
 //Optional CLI Command
-nest g class modules/invoice/dto/create-category.dto --no-spec --flat
-nest g class modules/invoice/dto/update-category.dto --no-spec --flat
-nest g class modules/invoice/dto/query-category.dto --no-spec --flat
+nest g class modules/suppliers-payment/dto/create-category.dto --no-spec --flat
+nest g class modules/suppliers-payment/dto/update-category.dto --no-spec --flat
+nest g class modules/suppliers-payment/dto/query-category.dto --no-spec --flat
 nest g class common/dto/pagination-query.dto --no-spec --flat
 
 
-src/modules/invoice/
-├── invoice.module.ts
-├── invoice.controller.ts
-├── invoice.service.ts
-├── invoice.dto.ts
+src/modules/suppliers-payment/
+├── suppliers-payment.module.ts
+├── suppliers-payment.controller.ts
+├── suppliers-payment.service.ts
+├── suppliers-payment.dto.ts
 └── product.schema.ts
