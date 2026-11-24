@@ -60,7 +60,7 @@ export class PurchaseService {
     }
 
     async show(query: PurchaseQueryDto) {
-        const { limit, page, search, products_id, suppliers_id, status } = query;
+        const { limit, page, search, products_id, suppliers_id } = query;
         const filter: QueryFilter<PurchaseDocument> = {};
 
         try {

@@ -45,7 +45,4 @@ export class PurchaseQueryDto extends PaginationDto {
 
     @IsOptional() @IsMongoId()
     suppliers_id: string;
-
-    @IsOptional() @IsIn(['active', 'inactive'])
-    status: 'active' | 'inactive';
 }

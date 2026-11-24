@@ -144,7 +144,7 @@ export class ProductsService {
 
     async update(id: string, payload: UpdateProductDto) {
         try {
-            if (!isObjectIdOrHexString(id)) throw new BadRequestException('Invalid Categories ID');
+            if (!isObjectIdOrHexString(id)) throw new BadRequestException('Invalid Products ID');
             const [findProductById, findProductByModel, findCategoriesById, findUnittypesById] = await Promise.all([
                 this.ProductModel.findById(id).lean(),
                 this.ProductModel.exists({ product_model: { $regex: `^${CreateSearchRegex(payload.product_model)}$`, $options: 'i' }, _id: { $ne: id } }),

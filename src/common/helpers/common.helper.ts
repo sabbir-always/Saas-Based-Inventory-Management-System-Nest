@@ -1,12 +1,11 @@
 import { ConflictException } from '@nestjs/common';
 
-export const MongooseExceptionError = (error: any): never => {
-    if (error.code === 11000) {
+export const MongooseExceptionError = (error: any): void => {
+    if (error?.code === 11000) {
         const field = Object.keys(error.keyValue ?? {})[0] ?? 'Field';
         throw new ConflictException(`${field} already exists`);
     }
-    throw error;
-}
+};
 
 export const CreatePagination = (page: number, limit: number, count: number) => {
     return {

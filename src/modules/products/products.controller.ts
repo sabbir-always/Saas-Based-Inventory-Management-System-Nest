@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { CreateProductDto, ProductQueryDto, UpdateProductDto } from './products.dto.js';
 import { MongooseObjectIdPipe } from '../../common/pipes/mongoose-object-id.pipe.js';
 import { ProductsService } from './products.service.js';
-import { CreateProductDto, ProductQueryDto, UpdateProductDto } from './products.dto.js';
 
 @Controller('products')
 export class ProductsController {
