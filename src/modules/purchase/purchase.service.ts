@@ -150,8 +150,8 @@ export class PurchaseService {
             if (!findPurchaseById) throw new NotFoundException('Purchase Not Found By ID');
             if (!findProductById) throw new NotFoundException('Product Not Found By ID');
             if (!findSuppliersById) throw new NotFoundException('Suppliers Not Found By ID');
-            if (String(findPurchaseById.products_id) !== String(payload.products_id) && findProductById.status !== 'active') throw new ConflictException('Product Is Inactive, Activate It First');
-            if (String(findPurchaseById.suppliers_id) !== String(payload.suppliers_id) && findSuppliersById.status !== 'active') throw new ConflictException('Supplier Is Inactive, Activate It First');
+            if (findProductById.status !== 'active') throw new ConflictException('Product Is Inactive, Activate It First');
+            if (findSuppliersById.status !== 'active') throw new ConflictException('Supplier Is Inactive, Activate It First');
 
             const response = await this.PurchaseModel.db.transaction(async (session) => {
                 const findPreviousPurchaseById = await this.PurchaseModel.findById(id).session(session).lean();

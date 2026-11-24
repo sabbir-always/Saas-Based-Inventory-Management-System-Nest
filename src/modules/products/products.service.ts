@@ -28,6 +28,8 @@ export class ProductsService {
             if (findProductByModel) throw new ConflictException('Product Model Name Already Exists');
             if (!findCategoriesById) throw new NotFoundException('Categories Not Found By ID');
             if (!findUnittypesById) throw new NotFoundException('Unittypes Not Found By ID');
+            if (findCategoriesById.status !== 'active') throw new ConflictException('Categories Is Inactive, Activate It First');
+            if (findUnittypesById.status !== 'active') throw new ConflictException('Unittypes Is Inactive, Activate It First');
 
             const response = await this.ProductModel.db.transaction(async (session) => {
                 const [product] = await this.ProductModel.create([{
@@ -156,6 +158,8 @@ export class ProductsService {
             if (findProductByModel) throw new ConflictException('Product Model Already Exists');
             if (!findCategoriesById) throw new NotFoundException('Categories Not Found By ID');
             if (!findUnittypesById) throw new NotFoundException('Unittypes Not Found By ID');
+            if (findCategoriesById.status !== 'active') throw new ConflictException('Categories Is Inactive, Activate It First');
+            if (findUnittypesById.status !== 'active') throw new ConflictException('Unittypes Is Inactive, Activate It First');
 
             const response = await this.ProductModel.db.transaction(async (session) => {
                 const product = await this.ProductModel.findByIdAndUpdate(id, {
