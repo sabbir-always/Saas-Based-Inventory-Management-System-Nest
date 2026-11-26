@@ -1,4 +1,3 @@
-
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export type SuppliersDocument = HydratedDocument<Suppliers>;
@@ -27,13 +26,13 @@ export class Suppliers {
     warehouse_name: string;
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_purchase: number; //auto-complete
+    total_purchase_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_payments: number; //auto-complete
+    total_paid_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    current_dues: number; //auto-complete
+    current_dues_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
     number_of_purchase: number; //auto-complete

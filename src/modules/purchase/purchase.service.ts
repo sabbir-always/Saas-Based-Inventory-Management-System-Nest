@@ -27,6 +27,10 @@ export class PurchaseService {
             if (findProductById.status !== 'active') throw new ConflictException('Product Is Inactive, Activate It First');
             if (findSuppliersById.status !== 'active') throw new ConflictException('Supplier Is Inactive, Activate It First');
 
+            //-- calculation --//
+            const sub_total = Number((Number(payload.quantity) * Number(payload.price)).toFixed(2));
+            const grand_total = Number((Number(sub_total) + Number(payload.shipping_cost ?? 0)).toFixed(2));
+
             const response = await this.PurchaseModel.db.transaction(async (session) => {
                 const [purchase] = await this.PurchaseModel.create([{
                     date_and_time: payload.date_and_time,
@@ -34,15 +38,16 @@ export class PurchaseService {
                     products_id: payload.products_id,
                     suppliers_id: payload.suppliers_id,
                     quantity: payload.quantity,
-                    price: payload.price ?? findProductById.purchase_price,
-                    sub_total: Number((Number(payload.quantity) * Number(payload.price ?? findProductById.purchase_price)).toFixed(2)),
+                    price: payload.price ?? 0,
+                    sub_total: sub_total,
                     shipping_cost: Number(payload.shipping_cost ?? 0),
-                    grand_total: Number((Number(payload.quantity) * Number(payload.price ?? findProductById.purchase_price) + Number(payload.shipping_cost ?? 0)).toFixed(2)),
+                    grand_total: grand_total,
+                    current_dues: grand_total,
                     notes: payload.notes
                 }], { session });
 
                 await this.ProductModel.updateOne({ _id: payload.products_id }, { $inc: { quantity: payload.quantity } }, { session });
-                await this.SupplierModel.updateOne({ _id: payload.suppliers_id }, { $inc: { total_purchase: purchase.grand_total, current_dues: purchase.grand_total, number_of_purchase: 1 } }, { session });
+                await this.SupplierModel.updateOne({ _id: payload.suppliers_id }, { $inc: { total_purchase_amount: purchase.grand_total, number_of_purchase: 1 } }, { session });
                 return purchase
             })
 
@@ -154,33 +159,20 @@ export class PurchaseService {
             if (findSuppliersById.status !== 'active') throw new ConflictException('Supplier Is Inactive, Activate It First');
 
             const response = await this.PurchaseModel.db.transaction(async (session) => {
-                const findPreviousPurchaseById = await this.PurchaseModel.findById(id).session(session).lean();
-                if (!findPreviousPurchaseById) throw new NotFoundException('Purchase Not Found By ID');
-
-                if (String(findPreviousPurchaseById.products_id) === String(payload.products_id)) {
-                    const adjust_quantity = await this.ProductModel.updateOne({ _id: findPreviousPurchaseById.products_id, quantity: { $gte: findPreviousPurchaseById.quantity - payload.quantity } }, { $inc: { quantity: payload.quantity - findPreviousPurchaseById.quantity } }, { session })
-                    if (adjust_quantity.matchedCount === 0) throw new ConflictException('Cannot Reduce Quantity: Some Stock From This Purchase Is Already Used Or Sold');
-
-                } else {
-                    const restore_quantity = await this.ProductModel.updateOne({ _id: findPreviousPurchaseById.products_id, quantity: { $gte: findPreviousPurchaseById.quantity } }, { $inc: { quantity: -findPreviousPurchaseById.quantity } }, { session })
-                    if (restore_quantity.matchedCount === 0) throw new ConflictException('Cannot Change Product: Stock Of The Old Product From This Purchase Is Already Used Or Sold');
-                    await this.ProductModel.updateOne({ _id: payload.products_id }, { $inc: { quantity: payload.quantity } }, { session });
-                }
-
-                const restore_dues = await this.SupplierModel.updateOne({ _id: findPreviousPurchaseById.suppliers_id, current_dues: { $gte: findPreviousPurchaseById.grand_total } }, { $inc: { total_purchase: -findPreviousPurchaseById.grand_total, current_dues: -findPreviousPurchaseById.grand_total, number_of_purchase: -1 } }, { session });
-                if (restore_dues.matchedCount === 0) throw new ConflictException('Cannot Update Purchase: Payment Is Already Made To This Supplier');
-                await this.SupplierModel.updateOne({ _id: payload.suppliers_id }, { $inc: { total_purchase: Number((Number(payload.quantity) * Number(payload.price ?? findProductById.purchase_price) + Number(payload.shipping_cost ?? 0)).toFixed(2)), current_dues: Number((Number(payload.quantity) * Number(payload.price ?? findProductById.purchase_price) + Number(payload.shipping_cost ?? 0)).toFixed(2)), number_of_purchase: 1 } }, { session });
+                const sub_total = Number((Number(payload.quantity) * Number(payload.price ?? findProductById.purchase_price)).toFixed(2));
+                const grand_total = Number((Number(sub_total) + Number(payload.shipping_cost ?? 0)).toFixed(2));
 
                 const purchase = await this.PurchaseModel.findByIdAndUpdate(id, {
-                    date_and_time: payload.date_and_time ?? findPreviousPurchaseById.date_and_time,
-                    date_and_time_formatted: CreateFormattedDateWithTime(payload.date_and_time ?? findPreviousPurchaseById.date_and_time),
+                    date_and_time: payload.date_and_time ?? findPurchaseById.date_and_time,
+                    date_and_time_formatted: CreateFormattedDateWithTime(payload.date_and_time ?? findPurchaseById.date_and_time),
                     products_id: payload.products_id,
                     suppliers_id: payload.suppliers_id,
                     quantity: payload.quantity,
                     price: payload.price ?? findProductById.purchase_price,
-                    sub_total: Number((Number(payload.quantity) * Number(payload.price ?? findProductById.purchase_price)).toFixed(2)),
+                    sub_total: sub_total,
                     shipping_cost: Number(payload.shipping_cost ?? 0),
-                    grand_total: Number((Number(payload.quantity) * Number(payload.price ?? findProductById.purchase_price) + Number(payload.shipping_cost ?? 0)).toFixed(2)),
+                    grand_total: grand_total,
+                    current_dues: grand_total,
                     notes: payload.notes
                 }, { new: true, runValidators: true, session }).lean();
 
@@ -207,14 +199,8 @@ export class PurchaseService {
             if (!isObjectIdOrHexString(id)) throw new BadRequestException('Invalid Purchase ID');
 
             const response = await this.PurchaseModel.db.transaction(async (session) => {
-                const findPreviousPurchaseById = await this.PurchaseModel.findById(id).session(session).lean();
-                if (!findPreviousPurchaseById) throw new NotFoundException('Purchase Not Found By ID');
-
-                const restore_quantity = await this.ProductModel.updateOne({ _id: findPreviousPurchaseById.products_id, quantity: { $gte: findPreviousPurchaseById.quantity } }, { $inc: { quantity: -findPreviousPurchaseById.quantity } }, { session });
-                if (restore_quantity.matchedCount === 0) throw new ConflictException('Quantity Already Used, Cannot Delete This Purchase');
-
-                const restore_dues = await this.SupplierModel.updateOne({ _id: findPreviousPurchaseById.suppliers_id, current_dues: { $gte: findPreviousPurchaseById.grand_total } }, { $inc: { total_purchase: -findPreviousPurchaseById.grand_total, current_dues: -findPreviousPurchaseById.grand_total, number_of_purchase: -1 } }, { session });
-                if (restore_dues.matchedCount === 0) throw new ConflictException('Payment Already Made, Cannot Delete This Purchase');
+                const findPurchaseById = await this.PurchaseModel.findById(id).session(session).lean();
+                if (!findPurchaseById) throw new NotFoundException('Purchase Not Found By ID');
 
                 const purchase = await this.PurchaseModel.findByIdAndDelete(id, { session }).lean();
                 return purchase
