@@ -214,14 +214,13 @@ export class ProductsService {
             if (findProductById.quantity > 0) throw new ConflictException('Product Has Quantity, Delete Or Move Them First');
             if (findProductById.status === "active") throw new ForbiddenException('Cannot Delete Active Product. Please Deactivate First.');
 
-
             const response = await this.ProductModel.db.transaction(async (session) => {
                 const product = await this.ProductModel.findByIdAndDelete(id, { session }).lean();
                 await this.CategoriesModel.updateOne({ _id: findProductById.categories_id }, { $inc: { number_of_products: -1 } }, { session });
                 await this.UnittypesModel.updateOne({ _id: findProductById.unittypes_id }, { $inc: { number_of_products: -1 } }, { session });
 
                 return product
-            })
+            });
 
             if (response) {
                 return {

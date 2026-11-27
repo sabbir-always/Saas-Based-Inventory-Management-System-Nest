@@ -1,4 +1,3 @@
-
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export type CustomersDocument = HydratedDocument<Customers>;
@@ -17,20 +16,26 @@ export class Customers {
     @Prop({ type: String, trim: true, required: true, unique: true, minlength: 11, maxlength: 11 })
     customer_phone: string;
 
+    @Prop({ type: String, trim: true, required: true, unique: true, lowercase: true, minlength: 3, maxlength: 50 })
+    customer_email: string;
+
     @Prop({ type: String, trim: true, minlength: 3, maxlength: 250 })
     customer_address: string;
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_purchase: number; //auto-complete
+    total_purchase_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_payments: number; //auto-complete
+    total_paid_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    current_dues: number; //auto-complete
+    current_dues_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
     number_of_purchase: number; //auto-complete
+
+    @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
+    installment: 'active' | 'inactive'; //auto-complete
 
     @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
     status: 'active' | 'inactive';
