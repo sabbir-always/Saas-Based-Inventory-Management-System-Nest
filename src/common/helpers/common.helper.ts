@@ -30,15 +30,11 @@ export const CreateFormattedDateWithTime = (dateWithTime?: string | Date | null)
     const parsed = new Date(dateWithTime);
     if (isNaN(parsed.getTime())) return null;
 
-    return parsed
-        .toLocaleString('en-GB', {
-            timeZone: 'Asia/Dhaka',
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
-        })
-        .replace(/\s+/g, ' ')
-        .replace(', ', ' - ')
-        .toUpperCase();
+    return parsed.toLocaleString('en-GB', {
+        timeZone: 'Asia/Dhaka',
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
+    }).replace(/\s+/g, ' ').replace(', ', ' - ').toUpperCase();
 };
 
 export const CreateSearchRegex = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
