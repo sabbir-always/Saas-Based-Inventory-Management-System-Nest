@@ -56,7 +56,7 @@ export class PurchaseService {
                 if (product_response.matchedCount === 0) { throw new NotFoundException('The Product Quantity Could Not Be Updated.') };
 
                 // supplier synchronization
-                // const supplier_response = await this.SupplierModel.updateOne({ _id: payload.suppliers_id }, { $inc: { total_purchase_amount: purchase.grand_total, current_dues_amount: purchase.grand_total, number_of_purchase: 1 } }, { session });
+                // const supplier_response = await this.SupplierModel.updateOne({ _id: payload.suppliers_id }, { $inc: { purchase_amount: purchase.grand_total, current_dues: purchase.grand_total, number_of_purchase: 1 } }, { session });
                 // if (supplier_response.matchedCount === 0) { throw new NotFoundException('Supplier Not Found By ID') };
 
                 return purchase
