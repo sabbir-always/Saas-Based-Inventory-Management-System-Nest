@@ -33,6 +33,9 @@ export class Purchase {
     grand_total: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
+    paid_amount: number; //auto-complete
+
+    @Prop({ type: Number, min: 0, default: 0 })
     current_dues: number; //auto-complete
 
     @Prop({ type: String, trim: true, default: null, minLength: 3, maxLength: 200 })

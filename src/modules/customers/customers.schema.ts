@@ -23,13 +23,13 @@ export class Customers {
     customer_address: string;
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_purchase_amount: number; //auto-complete
+    purchase_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    total_paid_amount: number; //auto-complete
+    paid_amount: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
-    current_dues_amount: number; //auto-complete
+    current_dues: number; //auto-complete
 
     @Prop({ type: Number, min: 0, default: 0 })
     number_of_purchase: number; //auto-complete
