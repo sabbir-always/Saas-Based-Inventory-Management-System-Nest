@@ -14,7 +14,6 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
     credentials: true
   });
-  app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
