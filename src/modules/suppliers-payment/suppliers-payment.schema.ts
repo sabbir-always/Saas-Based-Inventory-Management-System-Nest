@@ -10,7 +10,7 @@ export class SupplierPayment {
     @Prop({ type: String, default: null })
     date_and_time_formatted: string | null;
 
-    @Prop({ type: Types.ObjectId, ref: 'Purchases', required: true })
+    @Prop({ type: Types.ObjectId, ref: 'Purchase', required: true })
     purchase_id: Types.ObjectId;
 
     @Prop({ type: Number, required: true, min: 1 })

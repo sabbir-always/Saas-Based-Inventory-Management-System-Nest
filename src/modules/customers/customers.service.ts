@@ -48,7 +48,7 @@ export class CustomersService {
         const filter: QueryFilter<CustomersDocument> = {};
 
         try {
-            if (search) { filter.$or = [{ supplier_name: { $regex: CreateSearchRegex(search), $options: 'i' } }] }
+            if (search) { filter.$or = [{ customer_name: { $regex: CreateSearchRegex(search), $options: 'i' } }] }
             if (status && ["active", "inactive"].includes(status)) { filter.status = status };
 
             const [response, count] = await Promise.all([
