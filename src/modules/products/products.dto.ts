@@ -45,8 +45,9 @@ export class ProductQueryDto extends PaginationDto {
     @IsOptional() @IsString() @MaxLength(100)
     search: string;
 
+    @Transform(({ value }) => (value === '' || value === null ? undefined : value))
     @IsOptional() @IsMongoId()
-    categories_id: string;
+    categories: string;
 
     @Transform(({ value }) => (value === '' || value === null ? undefined : value))
     @IsOptional() @IsIn(['active', 'inactive'])
