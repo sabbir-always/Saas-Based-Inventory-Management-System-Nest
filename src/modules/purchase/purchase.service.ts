@@ -41,8 +41,14 @@ export class PurchaseService {
                     notes: payload.notes
                 }], { session });
 
-                await this.ProductModel.updateOne({ _id: payload.products_id }, { $inc: { quantity: payload.quantity } }, { session });
-                await this.SupplierModel.updateOne({ _id: payload.suppliers_id }, { $inc: { total_purchase: purchase.grand_total, current_dues: purchase.grand_total, number_of_purchase: 1 } }, { session });
+                // quantity synchronization
+                const product_response = await this.ProductModel.updateOne({ _id: payload.products_id }, { $inc: { quantity: payload.quantity } }, { session });
+                if (product_response.matchedCount === 0) { throw new NotFoundException('Product Not Found By ID') };
+
+                // supplier synchronization
+                const supplier_response = await this.SupplierModel.updateOne({ _id: payload.suppliers_id }, { $inc: { total_purchase: purchase.grand_total, current_dues: purchase.grand_total, number_of_purchase: 1 } }, { session });
+                if (supplier_response.matchedCount === 0) { throw new NotFoundException('Supplier Not Found By ID') };
+
                 return purchase
             })
 

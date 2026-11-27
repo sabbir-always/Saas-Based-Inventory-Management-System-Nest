@@ -17,9 +17,6 @@ export class Customers {
     @Prop({ type: String, trim: true, required: true, unique: true, minlength: 11, maxlength: 11 })
     customer_phone: string;
 
-    @Prop({ type: String, trim: true, required: true, unique: true, lowercase: true, minlength: 3, maxlength: 50 })
-    customer_email: string;
-
     @Prop({ type: String, trim: true, minlength: 3, maxlength: 250 })
     customer_address: string;
 
