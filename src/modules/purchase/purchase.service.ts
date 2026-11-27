@@ -39,7 +39,7 @@ export class PurchaseService {
             const response = await this.PurchaseModel.db.transaction(async (session) => {
                 const [purchase] = await this.PurchaseModel.create([{
                     date_and_time: payload.date_and_time,
-                    date_and_time_formatted: CreateFormattedDateWithTime(payload.date_and_time ?? new Date()),
+                    date_and_time_formatted: CreateFormattedDateWithTime(payload.date_and_time),
                     products_id: payload.products_id,
                     suppliers_id: payload.suppliers_id,
                     quantity: payload.quantity,
@@ -176,8 +176,6 @@ export class PurchaseService {
                 const grand_total = this.RoundAmount(sub_total + shipping_cost);
 
                 const purchase = await this.PurchaseModel.findByIdAndUpdate(id, {
-                    date_and_time: payload.date_and_time ?? findPurchaseById.date_and_time,
-                    date_and_time_formatted: CreateFormattedDateWithTime(payload.date_and_time ?? findPurchaseById.date_and_time),
                     products_id: payload.products_id,
                     suppliers_id: payload.suppliers_id,
                     quantity: payload.quantity,

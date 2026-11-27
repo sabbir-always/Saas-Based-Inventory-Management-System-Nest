@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { IsEmail, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsDateString, IsEmail, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 export class PaginationDto {
     @IsOptional() @Type(() => Number) @IsInt() @Min(1)
@@ -10,6 +10,9 @@ export class PaginationDto {
 }
 
 export class CreateSuppliersDto {
+    @IsOptional() @IsDateString()
+    date_and_time: string;
+
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
     @IsString() @IsNotEmpty() @MinLength(3) @MaxLength(50)
     supplier_name: string;

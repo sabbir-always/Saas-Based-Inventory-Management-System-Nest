@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, ForbiddenException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreatePagination, CreateSearchRegex, MongooseExceptionError } from '../../common/helpers/common.helper.js';
+import { CreateFormattedDateOnly, CreatePagination, CreateSearchRegex, MongooseExceptionError } from '../../common/helpers/common.helper.js';
 import { CreateSuppliersDto, SuppliersQueryDto, UpdateSuppliersDto } from './suppliers.dto.js';
 import { Purchase, PurchaseDocument } from '../purchase/purchase.schema.js';
 import { Suppliers, SuppliersDocument } from './suppliers.schema.js';
@@ -25,6 +25,8 @@ export class SuppliersService {
             if (findSupplierByPhone) throw new ConflictException('Phone Already Exists');
 
             const response = await this.SupplierModel.create({
+                date_and_time: payload.date_and_time,
+                date_and_time_formatted: CreateFormattedDateOnly(payload.date_and_time),
                 supplier_name: payload.supplier_name,
                 supplier_phone: payload.supplier_phone,
                 supplier_email: payload.supplier_email,
@@ -109,6 +111,8 @@ export class SuppliersService {
             if (findSupplierByPhone) throw new ConflictException('Supplier Phone Already Exists');
 
             const response = await this.SupplierModel.findByIdAndUpdate(id, {
+                date_and_time: payload.date_and_time,
+                date_and_time_formatted: CreateFormattedDateOnly(payload.date_and_time),
                 supplier_name: payload.supplier_name,
                 supplier_phone: payload.supplier_phone,
                 supplier_email: payload.supplier_email,
