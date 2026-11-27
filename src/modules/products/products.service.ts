@@ -63,7 +63,7 @@ export class ProductsService {
     }
 
     async show(query: ProductQueryDto) {
-        const { limit, page, search, categories_id, unittypes_id, status } = query;
+        const { limit, page, search, categories_id, status } = query;
         const filter: QueryFilter<ProductsDocument> = {};
 
         try {
@@ -77,10 +77,6 @@ export class ProductsService {
             if (categories_id) {
                 if (!isObjectIdOrHexString(categories_id)) throw new BadRequestException('Invalid Categories ID');
                 filter.categories_id = categories_id;
-            }
-            if (unittypes_id) {
-                if (!isObjectIdOrHexString(unittypes_id)) throw new BadRequestException('Invalid Unittypes ID');
-                filter.unittypes_id = unittypes_id;
             }
 
             const [products, count] = await Promise.all([
