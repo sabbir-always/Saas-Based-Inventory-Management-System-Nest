@@ -10,7 +10,7 @@ export class Categories {
     @Prop({ type: Number, min: 0, default: 0 })
     number_of_products: number; //auto-complete
 
-    @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
+    @Prop({ type: String, enum: ['active', 'inactive'], default: 'active' })
     status: 'active' | 'inactive';
 }
 
