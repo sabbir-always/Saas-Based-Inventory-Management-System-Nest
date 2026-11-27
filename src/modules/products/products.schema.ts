@@ -28,7 +28,7 @@ export class Products {
     @Prop({ type: Number, min: 0, default: 0 })
     selling_price: number;
 
-    @Prop({ type: String, enum: ['active', 'inactive'], default: 'inactive' })
+    @Prop({ type: String, enum: ['active', 'inactive'], default: 'active' })
     status: 'active' | 'inactive';
 }
 

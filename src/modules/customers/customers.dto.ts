@@ -38,6 +38,7 @@ export class CustomersQueryDto extends PaginationDto {
     @IsOptional() @IsString() @MaxLength(100)
     search: string;
 
+    @Transform(({ value }) => (value === '' || value === null ? undefined : value))
     @IsOptional() @IsIn(['active', 'inactive'])
     status: 'active' | 'inactive';
 }

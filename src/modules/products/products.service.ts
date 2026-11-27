@@ -71,7 +71,9 @@ export class ProductsService {
                 const regex = { $regex: CreateSearchRegex(search), $options: 'i' };
                 filter.$or = [{ product_model: regex }, { product_brand: regex }, { product_name: regex }];
             }
+            
             if (status && ["active", "inactive"].includes(status)) { filter.status = status };
+
             if (categories_id) {
                 if (!isObjectIdOrHexString(categories_id)) throw new BadRequestException('Invalid Categories ID');
                 filter.categories_id = categories_id;

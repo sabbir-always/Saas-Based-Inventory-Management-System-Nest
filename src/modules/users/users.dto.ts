@@ -64,6 +64,7 @@ export class UsersQueryDto extends PaginationDto {
     @IsOptional() @IsIn(['superadmin', 'admin', 'anonymous'])
     role: 'superadmin' | 'admin' | 'anonymous';
 
+    @Transform(({ value }) => (value === '' || value === null ? undefined : value))
     @IsOptional() @IsIn(['active', 'inactive'])
     status: 'active' | 'inactive';
 }

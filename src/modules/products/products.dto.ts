@@ -51,6 +51,7 @@ export class ProductQueryDto extends PaginationDto {
     @IsOptional() @IsMongoId()
     unittypes_id: string;
 
+    @Transform(({ value }) => (value === '' || value === null ? undefined : value))
     @IsOptional() @IsIn(['active', 'inactive'])
     status: 'active' | 'inactive';
 }

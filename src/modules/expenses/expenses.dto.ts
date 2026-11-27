@@ -40,7 +40,8 @@ export class ExpensesQueryDto extends PaginationDto {
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
     @IsOptional() @IsString() @MaxLength(100)
     search: string;
-
+    
+    @Transform(({ value }) => (value === '' || value === null ? undefined : value))
     @IsOptional() @IsIn(['cash', 'bkash', 'nagad', 'bank', 'cheque', 'others'])
     payment_method: 'cash' | 'bkash' | 'nagad' | 'bank' | 'cheque' | 'others';
 }
