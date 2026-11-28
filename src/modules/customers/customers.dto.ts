@@ -19,10 +19,6 @@ export class CreateCustomersDto {
     @Matches(/^01[3-9]\d{8}$/, { message: 'Invalid Bangladeshi phone number' })
     customer_phone: string;
 
-    @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
-    @IsEmail() @IsNotEmpty() @MaxLength(50)
-    customer_email: string;
-
     @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
     @IsOptional() @IsString() @MinLength(3) @MaxLength(250)
     customer_address: string;

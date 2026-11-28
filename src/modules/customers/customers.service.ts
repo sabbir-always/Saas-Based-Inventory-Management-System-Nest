@@ -13,18 +13,15 @@ export class CustomersService {
 
     async create(payload: CreateCustomersDto) {
         try {
-            const [findCustomersByEmail, findCustomersByPhone] = await Promise.all([
-                this.CustomersModel.exists({ customer_email: { $regex: `^${CreateSearchRegex(payload.customer_email)}$`, $options: 'i' } }),
+            const [findCustomersByPhone] = await Promise.all([
                 this.CustomersModel.exists({ customer_phone: { $regex: `^${CreateSearchRegex(payload.customer_phone)}$`, $options: 'i' } }),
             ])
 
-            if (findCustomersByEmail) throw new ConflictException('Email Already Exists');
             if (findCustomersByPhone) throw new ConflictException('Phone Already Exists');
 
             const response = await this.CustomersModel.create({
                 customer_name: payload.customer_name,
                 customer_phone: payload.customer_phone,
-                customer_email: payload.customer_email,
                 customer_address: payload.customer_address
             });
 
@@ -94,20 +91,17 @@ export class CustomersService {
     async update(id: string, payload: UpdateCustomersDto) {
         try {
             if (!isObjectIdOrHexString(id)) throw new BadRequestException('Invalid Customers ID');
-            const [findCustomersById, findCustomersByEmail, findCustomersByPhone] = await Promise.all([
+            const [findCustomersById, findCustomersByPhone] = await Promise.all([
                 this.CustomersModel.findById(id).lean(),
-                this.CustomersModel.exists({ customer_email: { $regex: `^${CreateSearchRegex(payload.customer_email)}$`, $options: 'i' }, _id: { $ne: id } }),
                 this.CustomersModel.exists({ customer_phone: { $regex: `^${CreateSearchRegex(payload.customer_phone)}$`, $options: 'i' }, _id: { $ne: id } }),
             ])
 
             if (!findCustomersById) throw new NotFoundException('Customers Not Found By ID');
-            if (findCustomersByEmail) throw new ConflictException('Customers Email Already Exists');
             if (findCustomersByPhone) throw new ConflictException('Customers Phone Already Exists');
 
             const response = await this.CustomersModel.findByIdAndUpdate(id, {
                 customer_name: payload.customer_name,
                 customer_phone: payload.customer_phone,
-                customer_email: payload.customer_email,
                 customer_address: payload.customer_address,
                 status: payload.status
             }, { new: true, runValidators: true });
@@ -122,6 +116,30 @@ export class CustomersService {
         } catch (error: any) {
             if (error instanceof HttpException) throw error;
             try { MongooseExceptionError(error) } catch (err) { if (err instanceof HttpException) throw err }
+            throw new InternalServerErrorException(error.message ?? "Internal Server Error");
+        }
+    }
+
+    async remove(id: string) {
+        try {
+            if (!isObjectIdOrHexString(id)) throw new BadRequestException('Invalid Customer ID');
+            const [findCustomersById] = await Promise.all([
+                this.CustomersModel.findById(id).lean()
+            ]);
+
+            if (!findCustomersById) throw new NotFoundException('Categories Not Found By ID');
+            if (findCustomersById.status === "active") throw new ForbiddenException('Cannot Delete Active Customer. Please Deactivate First.');
+
+            const response = await this.CustomersModel.findByIdAndDelete(id).lean();
+
+            if (response) {
+                return {
+                    success: true,
+                    message: "Customers Deleted Success"
+                }
+            }
+        } catch (error: any) {
+            if (error instanceof HttpException) throw error;
             throw new InternalServerErrorException(error.message ?? "Internal Server Error");
         }
     }
