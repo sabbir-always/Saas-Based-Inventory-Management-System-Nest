@@ -1,3 +1,4 @@
+import { SetupSwagger } from './common/swagger/swagger.config.js';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 import { NestFactory } from '@nestjs/core';
@@ -14,6 +15,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
     credentials: true
   });
+  await SetupSwagger(app);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
